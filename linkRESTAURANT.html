@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สาขาใกล้คุณ | Sakura Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
+            margin: 0;
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://img.lovepik.com/bg/20231216/street-in-an-japanese-village-full-of-trees_2494517_wh1200.png');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        h1, h2 { font-family: 'Sawarabi Mincho', serif; }
 
+        .location-card {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 15px;
+            border-left: 5px solid #b30000;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .location-card:hover {
+            background: rgba(50, 50, 50, 1);
+            transform: translateX(10px);
+        }
+        
+        .map-container {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #b30000;
+            height: 450px;
+            background: #222;
+        }
+
+        .status-open { color: #4ade80; font-size: 0.9rem; }
+        
+        .btn-nav {
+            background: #b30000;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="p-6 text-center border-bottom-4 border-red-700 bg-black/60">
+        <h1 class="text-4xl text-amber-500">店舗案内 (สาขาใกล้เคียง)</h1>
+        <p class="text-gray-400 mt-2">ค้นหาร้านซากุระที่ใกล้คุณที่สุด</p>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-4">
+                <h2 class="text-2xl mb-4 text-white flex items-center">
+                    <span class="mr-2">📍</span> สาขาในพื้นที่ของคุณ
+                </h2>
+                
+                <div class="location-card p-5" onclick="updateMap('สาขา สยามพารากอน')">
+                    <h3 class="text-xl text-amber-400">Sakura - Siam Paragon</h3>
+                    <p class="text-sm text-gray-400 mt-1">ชั้น G โซน Food Hall</p>
+                    <p class="status-open">● เปิดบริการ: 10:00 - 22:00</p>
+                    <div class="btn-nav">นำทางไปที่ร้าน</div>
+                </div>
+
+                <div class="location-card p-5" onclick="updateMap('สาขา เซ็นทรัลเวิลด์')">
+                    <h3 class="text-xl text-amber-400">Sakura - Central World</h3>
+                    <p class="text-sm text-gray-400 mt-1">ชั้น 6 โซน Atrium</p>
+                    <p class="status-open">● เปิดบริการ: 10:30 - 21:30</p>
+                    <div class="btn-nav">นำทางไปที่ร้าน</div>
+                </div>
+
+                <div class="location-card p-5" onclick="updateMap('สาขา ทองหล่อ')">
+                    <h3 class="text-xl text-amber-400">Sakura - Thong Lo</h3>
+                    <p class="text-sm text-gray-400 mt-1">ทองหล่อ ซอย 13 (Original Store)</p>
+                    <p class="status-open">● เปิดบริการ: 11:00 - 00:00</p>
+                    <div class="btn-nav">นำทางไปที่ร้าน</div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="map-container relative">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.611110000000!2d100.5348!3d13.7468!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ed4f4949ddf%3A0x6790932822a945!2sSiam%20Paragon!5e0!3m2!1sen!2sth!4v1700000000000" 
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                    <div class="absolute bottom-4 left-4 bg-black/80 p-3 rounded-lg border border-amber-500">
+                        <p id="current-loc" class="text-amber-500 font-bold">📍 กำลังแสดง: สาขาหลัก</p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-red-900/20 border border-red-800 rounded-lg">
+                    <p class="text-gray-300 text-sm italic">
+                        *หมายเหตุ: กรุณาอนุญาตให้เข้าถึงตำแหน่ง (Location Access) เพื่อค้นหาสาขาที่ใกล้คุณที่สุดได้แม่นยำยิ่งขึ้น
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function updateMap(branchName) {
+            document.getElementById('current-loc').innerText = "📍 กำลังแสดง: " + branchName;
+            // โค้ดสำหรับอัปเดตพิกัดแผนที่จริงจะใส่ตรงนี้
+            alert("กำลังเปลี่ยนแผนที่ไปที่: " + branchName);
+        }
+    </script>
+
+</body>
+</html>
